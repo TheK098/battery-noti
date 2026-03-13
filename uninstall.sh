@@ -12,6 +12,7 @@ fi
 
 rm -f "$PLIST_DIR/$PLIST_NAME"
 rm -f "$HOME/.local/bin/battery-noti.sh"
+rm -f "$HOME/.local/bin/battery-noti-alert"
 rm -rf "$HOME/.config/battery-noti"
 rm -f /tmp/battery-noti.lock
 

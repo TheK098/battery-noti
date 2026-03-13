@@ -23,14 +23,26 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" 2>/dev/null && pwd)"
 if [ -f "$SCRIPT_DIR/battery-noti.sh" ]; then
     cp "$SCRIPT_DIR/battery-noti.sh" "$INSTALL_DIR/battery-noti.sh"
     sed "s|__HOME__|$HOME|g" "$SCRIPT_DIR/$PLIST_NAME" > "$PLIST_DIR/$PLIST_NAME"
+    SWIFT_SRC="$SCRIPT_DIR/alert.swift"
 else
     curl -fsSL "$REPO_URL/battery-noti.sh" -o "$INSTALL_DIR/battery-noti.sh"
     curl -fsSL "$REPO_URL/$PLIST_NAME" -o /tmp/battery-noti-plist-tmp
     sed "s|__HOME__|$HOME|g" /tmp/battery-noti-plist-tmp > "$PLIST_DIR/$PLIST_NAME"
     rm -f /tmp/battery-noti-plist-tmp
+    curl -fsSL "$REPO_URL/alert.swift" -o /tmp/battery-noti-alert.swift
+    SWIFT_SRC="/tmp/battery-noti-alert.swift"
 fi
 
 chmod +x "$INSTALL_DIR/battery-noti.sh"
+
+echo "Compiling alert UI..."
+if swiftc -O -o "$INSTALL_DIR/battery-noti-alert" "$SWIFT_SRC" 2>/dev/null; then
+    chmod +x "$INSTALL_DIR/battery-noti-alert"
+    echo "Alert UI compiled"
+else
+    echo "Warning: Swift compilation failed — falling back to system dialog"
+fi
+rm -f /tmp/battery-noti-alert.swift
 
 if [ ! -f "$CONFIG_DIR/config" ]; then
     echo "THRESHOLD=3" > "$CONFIG_DIR/config"

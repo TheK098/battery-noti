@@ -40,14 +40,19 @@ if [ "$BATTERY" -le "$THRESHOLD" ]; then
 
         BATTERY=$(get_battery_percent)
 
-        osascript -e "
-            display dialog \"⚠️ BATTERY AT ${BATTERY}% — PLUG IN NOW\" \
-                with title \"battery-noti\" \
-                with icon stop \
-                buttons {\"OK\"} \
-                default button \"OK\" \
-                giving up after 25
-        " 2>/dev/null
+        ALERT_BIN="$HOME/.local/bin/battery-noti-alert"
+        if [ -x "$ALERT_BIN" ]; then
+            "$ALERT_BIN" "$BATTERY" 2>/dev/null || true
+        else
+            osascript -e "
+                display dialog \"⚠️ BATTERY AT ${BATTERY}% — PLUG IN NOW\" \
+                    with title \"battery-noti\" \
+                    with icon stop \
+                    buttons {\"OK\"} \
+                    default button \"OK\" \
+                    giving up after 25
+            " 2>/dev/null
+        fi
 
         sleep 30
 
