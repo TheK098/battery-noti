@@ -33,8 +33,8 @@ fi
 chmod +x "$INSTALL_DIR/battery-noti.sh"
 
 if [ ! -f "$CONFIG_DIR/config" ]; then
-    echo "THRESHOLD=5" > "$CONFIG_DIR/config"
-    echo "Created config at $CONFIG_DIR/config (threshold: 5%)"
+    echo "THRESHOLD=3" > "$CONFIG_DIR/config"
+    echo "Created config at $CONFIG_DIR/config (threshold: 3%)"
 else
     echo "Config already exists at $CONFIG_DIR/config — keeping it"
 fi

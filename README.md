@@ -19,10 +19,10 @@ curl -fsSL https://raw.githubusercontent.com/TheK098/battery-noti/main/setup.sh 
 Edit `~/.config/battery-noti/config`:
 
 ```
-THRESHOLD=5
+THRESHOLD=3
 ```
 
-Change the number to whatever % you want the alert at. Default is 5%.
+Change the number to whatever % you want the alert at. Default is 3%.
 
 ## Uninstall
 

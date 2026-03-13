@@ -12,7 +12,7 @@ if [ -f "$CONFIG_FILE" ]; then
     source "$CONFIG_FILE"
 fi
 
-THRESHOLD=${THRESHOLD:-5}
+THRESHOLD=${THRESHOLD:-3}
 
 get_battery_percent() {
     pmset -g batt | grep -Eo '[0-9]+%' | head -1 | tr -d '%'
