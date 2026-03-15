@@ -149,7 +149,7 @@ class AlertDelegate: NSObject, NSApplicationDelegate {
         glass.addSubview(message)
 
         let btn = GlassButton(title: "Dismiss", target: self, action: #selector(dismiss))
-        btn.frame = NSRect(x: (cardW - 120) / 2, y: 24, width: 120, height: 36)
+        btn.frame = NSRect(x: (cardW - 130) / 2, y: 22, width: 130, height: 38)
         glass.addSubview(btn)
 
         window.makeKeyAndOrderFront(nil)
@@ -181,18 +181,18 @@ class GlassButton: NSButton {
     }
 
     override func draw(_ dirtyRect: NSRect) {
-        layer?.cornerRadius = 10
+        layer?.cornerRadius = 12
         layer?.backgroundColor = hovered
-            ? NSColor(white: 1.0, alpha: 0.18).cgColor
-            : NSColor(white: 1.0, alpha: 0.1).cgColor
-        layer?.borderColor = NSColor(white: 1.0, alpha: 0.2).cgColor
-        layer?.borderWidth = 0.5
+            ? NSColor(white: 1.0, alpha: 0.25).cgColor
+            : NSColor(white: 1.0, alpha: 0.15).cgColor
+        layer?.borderColor = NSColor(white: 1.0, alpha: 0.35).cgColor
+        layer?.borderWidth = 1
 
         let style = NSMutableParagraphStyle()
         style.alignment = .center
         let attrs: [NSAttributedString.Key: Any] = [
-            .font: font ?? NSFont.systemFont(ofSize: 13, weight: .medium),
-            .foregroundColor: NSColor(white: 1.0, alpha: 0.85),
+            .font: font ?? NSFont.systemFont(ofSize: 14, weight: .medium),
+            .foregroundColor: NSColor.white,
             .paragraphStyle: style
         ]
         let size = title.size(withAttributes: attrs)
