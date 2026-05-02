@@ -53,7 +53,7 @@ class AlertDelegate: NSObject, NSApplicationDelegate {
         // Dark base overlay
         let overlay = NSView(frame: root.bounds)
         overlay.wantsLayer = true
-        overlay.layer?.backgroundColor = NSColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.5).cgColor
+        overlay.layer?.backgroundColor = NSColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.68).cgColor
         root.addSubview(overlay)
 
         // Red vignette — intense at edges, transparent in center
@@ -91,8 +91,9 @@ class AlertDelegate: NSObject, NSApplicationDelegate {
 
         let glass = NSVisualEffectView(frame: NSRect(x: cardX, y: cardY, width: cardW, height: cardH))
         glass.material = .hudWindow
-        glass.blendingMode = .behindWindow
+        glass.blendingMode = .withinWindow
         glass.state = .active
+        glass.appearance = NSAppearance(named: .darkAqua)
         glass.wantsLayer = true
         glass.layer?.cornerRadius = 22
         glass.layer?.masksToBounds = true
