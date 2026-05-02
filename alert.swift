@@ -4,6 +4,7 @@ import QuartzCore
 class AlertDelegate: NSObject, NSApplicationDelegate {
     let batteryPercent: Int
     var window: NSWindow!
+    var powerCheckTimer: Timer?
 
     init(batteryPercent: Int) {
         self.batteryPercent = batteryPercent
@@ -12,9 +13,21 @@ class AlertDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         buildWindow()
+        closeIfCharging()
+        powerCheckTimer = Timer.scheduledTimer(
+            timeInterval: 1.0,
+            target: self,
+            selector: #selector(closeIfCharging),
+            userInfo: nil,
+            repeats: true
+        )
         DispatchQueue.main.asyncAfter(deadline: .now() + 25) {
             NSApplication.shared.terminate(nil)
         }
+    }
+
+    func applicationWillTerminate(_ notification: Notification) {
+        powerCheckTimer?.invalidate()
     }
 
     func buildWindow() {
@@ -159,10 +172,44 @@ class AlertDelegate: NSObject, NSApplicationDelegate {
     @objc func dismiss() {
         NSApplication.shared.terminate(nil)
     }
+
+    @objc func closeIfCharging() {
+        if Self.isCharging() {
+            NSApplication.shared.terminate(nil)
+        }
+    }
+
+    static func isCharging() -> Bool {
+        let process = Process()
+        let output = Pipe()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/pmset")
+        process.arguments = ["-g", "batt"]
+        process.standardOutput = output
+        process.standardError = Pipe()
+
+        do {
+            try process.run()
+            process.waitUntilExit()
+        } catch {
+            return false
+        }
+
+        guard process.terminationStatus == 0 else {
+            return false
+        }
+
+        let data = output.fileHandleForReading.readDataToEndOfFile()
+        let status = String(data: data, encoding: .utf8) ?? ""
+        return status.contains("AC Power")
+    }
 }
 
 class GlassButton: NSButton {
     var hovered = false
+
+    override var allowsVibrancy: Bool {
+        false
+    }
 
     convenience init(title: String, target: AnyObject, action: Selector) {
         self.init(frame: .zero)
@@ -181,12 +228,18 @@ class GlassButton: NSButton {
     }
 
     override func draw(_ dirtyRect: NSRect) {
-        layer?.cornerRadius = 12
-        layer?.backgroundColor = hovered
-            ? NSColor(white: 1.0, alpha: 0.25).cgColor
-            : NSColor(white: 1.0, alpha: 0.15).cgColor
-        layer?.borderColor = NSColor(white: 1.0, alpha: 0.35).cgColor
-        layer?.borderWidth = 1
+        let buttonRect = bounds.insetBy(dx: 0.5, dy: 0.5)
+        let background = hovered
+            ? NSColor(red: 1.0, green: 0.18, blue: 0.18, alpha: 1.0)
+            : NSColor(red: 0.82, green: 0.05, blue: 0.05, alpha: 1.0)
+        let border = NSColor(red: 1.0, green: 0.45, blue: 0.45, alpha: 1.0)
+        let path = NSBezierPath(roundedRect: buttonRect, xRadius: 12, yRadius: 12)
+
+        background.setFill()
+        path.fill()
+        border.setStroke()
+        path.lineWidth = 1
+        path.stroke()
 
         let style = NSMutableParagraphStyle()
         style.alignment = .center
