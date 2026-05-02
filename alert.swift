@@ -218,6 +218,7 @@ class GlassButton: NSButton {
         self.action = action
         self.isBordered = false
         self.wantsLayer = true
+        self.appearance = NSAppearance(named: .darkAqua)
         self.font = NSFont.systemFont(ofSize: 13, weight: .medium)
         let area = NSTrackingArea(
             rect: .zero,
@@ -230,9 +231,9 @@ class GlassButton: NSButton {
     override func draw(_ dirtyRect: NSRect) {
         let buttonRect = bounds.insetBy(dx: 0.5, dy: 0.5)
         let background = hovered
-            ? NSColor(red: 1.0, green: 0.18, blue: 0.18, alpha: 1.0)
-            : NSColor(red: 0.82, green: 0.05, blue: 0.05, alpha: 1.0)
-        let border = NSColor(red: 1.0, green: 0.45, blue: 0.45, alpha: 1.0)
+            ? NSColor(white: 1.0, alpha: 0.28)
+            : NSColor(white: 1.0, alpha: 0.18)
+        let border = NSColor(white: 1.0, alpha: 0.55)
         let path = NSBezierPath(roundedRect: buttonRect, xRadius: 12, yRadius: 12)
 
         background.setFill()
